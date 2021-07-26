@@ -72,13 +72,15 @@ do
 	else
 		echo "Currently processing $input_directory/$trace ..."
 		awk '{ printf "payload=0001%08x00000000\n", $1 }' $input_directory/$trace > /tmp/$trace
+
 		echo "Writing PCAP file ..."
-		./pcap_generator_from_csv.py -i /tmp/$trace -o $output_directory/$trace > /dev/null
-		if [$? -eq 0 ]
+		./pcap_generator_from_csv.py -i /tmp/$trace -o $output_directory/$trace > /dev/null 2>> $output_directory/logs
+
+		if [ $? -eq 0 ]
 		then  
 			echo $trace >> $output_directory/progress
 		else
-			echo -e "An error has occured! Terminating the script..." 
+			echo -e "An error has occured! Please check the logs in OUTPUT_DIRECTORY for more information." 
 			exit 1
 		fi
 		echo "Cleaning up ..."
