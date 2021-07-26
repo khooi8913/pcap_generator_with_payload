@@ -449,15 +449,17 @@ def generateTraceFromFile(inputfile, pcapfile, **kwargs):
         # if payload is set
         else:
             message=None
-            with open(payload, 'r') as lines:
-                for l in lines:
-                    #remove blank spaces
-                    l = l.strip()
-                    #removed blank lines
-                    if l:
-                        #omit commented lines
-                        if not (l.startswith("#", 0, 1)):
-                            message = l
+            # Bypass the need for payload to be a fixed input file, instead, we specify the custom payload for each packet in the CSV file.
+            message=payload.strip()
+            # with open(payload, 'r') as lines:
+            #     for l in lines:
+            #         #remove blank spaces
+            #         l = l.strip()
+            #         #removed blank lines
+            #         if l:
+            #             #omit commented lines
+            #             if not (l.startswith("#", 0, 1)):
+            #                 message = l
             if message is None:
                 print("The file containing the payload {} has no useful line".format(payload))
                 print("Exiting...")
@@ -762,13 +764,13 @@ if __name__ == '__main__':
                         help="Specify default source port if it is not present "
                              "in the input.csv. Default: 1234",
                         required=False,
-                        default=["1234"])
+                        default=["32768"])
 
     parser.add_argument('-g', '--dst_port', nargs=1,
                         help="Specify default destination port if it is not present "
                              "in the input.csv. Default: 80",
                         required=False,
-                        default=["80"])
+                        default=["5858"])
     parser.add_argument('-j', '--gtp_teid', nargs=1,
                         help="Specify default GTP_TEID if it is not present "
                              "in the input.csv. Default: NO GTP TEID",
