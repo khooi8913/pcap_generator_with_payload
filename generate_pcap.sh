@@ -71,7 +71,13 @@ do
 		echo "Skipping $input_directory/$trace ..."
 	else
 		echo "Currently processing $input_directory/$trace ..."
-		awk '{ printf "payload=0001%08x00000000\n", $1 }' $input_directory/$trace > /tmp/$trace
+		awk '{ printf "payload=0001%08x00000000\n", $1 }' $input_directory/$trace > /tmp/$trace 2>> $output_directory/logs
+
+		if [ ! $? -eq 0 ]
+		then
+			echo -e "An error has occured! Please check the logs in OUTPUT_DIRECTORY for more information." 
+			exit 1
+		fi
 
 		echo "Writing PCAP file ..."
 		./pcap_generator_from_csv.py -i /tmp/$trace -o $output_directory/$trace > /dev/null 2>> $output_directory/logs
