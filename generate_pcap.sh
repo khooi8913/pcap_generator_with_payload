@@ -72,6 +72,7 @@ do
 	else
 		echo "Currently processing $input_directory/$trace ..."
 		awk '{ printf "payload=0001%08x00000000\n", $1 }' $input_directory/$trace > /tmp/tmp.csv
+		echo "Writing PCAP file ..."
 		./pcap_generator_from_csv.py -i /tmp/tmp.csv -o $output_directory/$trace > /dev/null
 		echo $trace >> $output_directory/progress
 	fi
