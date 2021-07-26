@@ -71,9 +71,9 @@ do
 		echo "Skipping $input_directory/$trace ..."
 	else
 		echo "Currently processing $input_directory/$trace ..."
-		awk '{ printf "payload=0001%08x00000000\n", $1 }' $input_directory/$trace > /tmp/tmp.csv
+		awk '{ printf "payload=0001%08x00000000\n", $1 }' $input_directory/$trace > /tmp/$trace
 		echo "Writing PCAP file ..."
-		./pcap_generator_from_csv.py -i /tmp/tmp.csv -o $output_directory/$trace > /dev/null
+		./pcap_generator_from_csv.py -i /tmp/$trace -o $output_directory/$trace > /dev/null
 		if [$? -eq 0 ]
 		then  
 			echo $trace >> $output_directory/progress
@@ -81,6 +81,8 @@ do
 			echo -e "An error has occured! Terminating the script..." 
 			exit 1
 		fi
+		echo "Cleaning up ..."
+		rm /tmp/$trace
 	fi
 done
 
