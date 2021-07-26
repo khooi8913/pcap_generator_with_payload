@@ -222,108 +222,108 @@ def calculateRemainingPercentage(current, n):
 
     # backspace(len(percent))  # back for n chars
 
-def readFile(input):
-    headers = list() # list of dictionaries
-    print("I am not crashed...just reading your input file...")
-    with open(input, 'r') as lines:
-        line_num = 1
-        for line in lines:
-            #remove blank spaces
-            line = line.strip()
-            #removed blank lines
-            if line:
-                #omit commented lines
-                packet_counter=1
-                if not (line.startswith("#", 0, 1)):
-                    #assume that the desctiption file is a CSV file and look like this:
-                    ##timestamp=123123124.123123, src_mac=<SRC_MAC>,dst_mac=<DST_MAC>, src_ip=<SRC_IP>, dst_ip<DST_IP>, src_port=<SRC_PORT>,dst_port=<DST_PORT>,gtp=<GTP_TEID>, ?? - unimplemented
-                    #let us further assume that order is not important
-                    one_line = line.split(',')
-                    # this dictionary will store eventually one complete header
-                    header = {
-                            'timestamp':"",
-                            'src_mac':"",
-                            'dst_mac':"",
-                            'src_ip':"",
-                            'dst_ip':"",
-                            'src_port':"",
-                            'dst_port':"",
-                            'gtp':"",
-                            'ext_src_ip':"",
-                            'ext_dst_ip':"",
-                            'vlan':"",
-                            'proto':"", #udp/tcp
-                            'payload':"" #this points to a file containing the payload in HEX in one line
-                            # TODO: add more (header) fields here
-                    }
-                    for i in one_line:
-                        #remove white spaces
-                        i=i.strip()
-                        #check whether there is a remaining comma at the end (strip above already makes it a zero-length
-                        #white space, so we only need to check that
+# def readFile(input):
+#     headers = list() # list of dictionaries
+#     print("I am not crashed...just reading your input file...")
+#     with open(input, 'r') as lines:
+#         line_num = 1
+#         for line in lines:
+#             #remove blank spaces
+#             line = line.strip()
+#             #removed blank lines
+#             if line:
+#                 #omit commented lines
+                # packet_counter=1
+                # if not (line.startswith("#", 0, 1)):
+                #     #assume that the desctiption file is a CSV file and look like this:
+                #     ##timestamp=123123124.123123, src_mac=<SRC_MAC>,dst_mac=<DST_MAC>, src_ip=<SRC_IP>, dst_ip<DST_IP>, src_port=<SRC_PORT>,dst_port=<DST_PORT>,gtp=<GTP_TEID>, ?? - unimplemented
+                #     #let us further assume that order is not important
+                #     one_line = line.split(',')
+                #     # this dictionary will store eventually one complete header
+                #     header = {
+                #             'timestamp':"",
+                #             'src_mac':"",
+                #             'dst_mac':"",
+                #             'src_ip':"",
+                #             'dst_ip':"",
+                #             'src_port':"",
+                #             'dst_port':"",
+                #             'gtp':"",
+                #             'ext_src_ip':"",
+                #             'ext_dst_ip':"",
+                #             'vlan':"",
+                #             'proto':"", #udp/tcp
+                #             'payload':"" #this points to a file containing the payload in HEX in one line
+                #             # TODO: add more (header) fields here
+                #     }
+                #     for i in one_line:
+                #         #remove white spaces
+                #         i=i.strip()
+                #         #check whether there is a remaining comma at the end (strip above already makes it a zero-length
+                #         #white space, so we only need to check that
 
-                        if i != "":
-                            #OK, everything is prepared, let's start to parse the relevant data
-                            header_row=i.split('=')
-                            #now, we only will have key=value pairs, let's see whether they are meaningful
-                            #note we need to iterate the whole line first, as it should not be ordered.
-                            for h in header.keys():
-                                if header_row[0] == h:
-                                    if h.endswith("mac"):
-                                    #convert header data to MAC
-                                        header[h] = parseMAC(header_row[1])
-                                    elif h.endswith('ip'):
-                                    #convert header data to IP
-                                        header[h] = parseIP(header_row[1])
-                                    elif h.endswith('port') or h.endswith('vlan') or h.endswith('gtp'):
-                                    #convert header data to Integer
-                                        header[h] = int(header_row[1])
-                                    elif h.endswith('timestamp') or h.endswith('payload'):
-                                        header[h] = header_row[1] #it is a string, but it can remain a string
-                                    elif h.endswith('proto'):
-                                        header[h] = parseProto(header_row[1])
-                                    # TODO: handle here futher header fields
+                #         if i != "":
+                #             #OK, everything is prepared, let's start to parse the relevant data
+                #             header_row=i.split('=')
+                #             #now, we only will have key=value pairs, let's see whether they are meaningful
+                #             #note we need to iterate the whole line first, as it should not be ordered.
+                #             for h in header.keys():
+                #                 if header_row[0] == h:
+                #                     if h.endswith("mac"):
+                #                     #convert header data to MAC
+                #                         header[h] = parseMAC(header_row[1])
+                #                     elif h.endswith('ip'):
+                #                     #convert header data to IP
+                #                         header[h] = parseIP(header_row[1])
+                #                     elif h.endswith('port') or h.endswith('vlan') or h.endswith('gtp'):
+                #                     #convert header data to Integer
+                #                         header[h] = int(header_row[1])
+                #                     elif h.endswith('timestamp') or h.endswith('payload'):
+                #                         header[h] = header_row[1] #it is a string, but it can remain a string
+                #                     elif h.endswith('proto'):
+                #                         header[h] = parseProto(header_row[1])
+                #                     # TODO: handle here futher header fields
 
-                    headers.append(header)
+                #     headers.append(header)
 
-    for h in headers:
-        #inside the list
-        for hh in h:
-            #inside one header
-            if hh == 'timestamp' and h[hh]=="":
-                h[hh] = default_timestamp
+    # for h in headers:
+    #     #inside the list
+    #     for hh in h:
+    #         #inside one header
+    #         if hh == 'timestamp' and h[hh]=="":
+    #             h[hh] = default_timestamp
 
-            if hh == 'src_mac' and h[hh]=="":
-                h[hh]=parseMAC(default_src_mac)
+    #         if hh == 'src_mac' and h[hh]=="":
+    #             h[hh]=parseMAC(default_src_mac)
 
-            if hh == 'dst_mac' and h[hh]=="":
-                h[hh] = parseMAC(default_dst_mac)
+    #         if hh == 'dst_mac' and h[hh]=="":
+    #             h[hh] = parseMAC(default_dst_mac)
 
-            if hh == 'src_ip' and h[hh] =="":
-                h[hh]=parseIP(default_src_ip)
+    #         if hh == 'src_ip' and h[hh] =="":
+    #             h[hh]=parseIP(default_src_ip)
 
-            if hh == 'dst_ip' and h[hh] == "":
-                h[hh] = parseIP(default_dst_ip)
+    #         if hh == 'dst_ip' and h[hh] == "":
+    #             h[hh] = parseIP(default_dst_ip)
 
-            if hh == 'src_port' and h[hh] == "":
-                h[hh] = default_src_port
+    #         if hh == 'src_port' and h[hh] == "":
+    #             h[hh] = default_src_port
 
-            if hh == 'dst_port' and h[hh] == "":
-                h[hh] = default_dst_port
+    #         if hh == 'dst_port' and h[hh] == "":
+    #             h[hh] = default_dst_port
 
-            if hh == 'vlan' and h[hh] == "":
-                h[hh] = default_vlan
+    #         if hh == 'vlan' and h[hh] == "":
+    #             h[hh] = default_vlan
 
-            if hh == 'gtp' and h[hh] == "":
-                h[hh] = None
+    #         if hh == 'gtp' and h[hh] == "":
+    #             h[hh] = None
 
-            if hh == 'payload' and h[hh] == "":
-                h[hh] = None
+    #         if hh == 'payload' and h[hh] == "":
+    #             h[hh] = None
 
-            if hh == 'proto' and h[hh] == "":
-                h[hh] = parseProto(default_proto)
+    #         if hh == 'proto' and h[hh] == "":
+    #             h[hh] = parseProto(default_proto)
 
-    return headers
+#     return headers
 
 
 def generateTraceFromFile(inputfile, pcapfile, **kwargs):
@@ -374,114 +374,128 @@ def generateTraceFromFile(inputfile, pcapfile, **kwargs):
     if default_vlan is not None:
         default_vlan = int(default_vlan)
 
-    i = 0
+    hasNextLine = True
     with open(input, 'r') as f:
-        line = f.readline()
-        while line:
-            i = i + 1    
-            line = line.strip()
-            if not (line.startswith("#", 0, 1)):
-                #assume that the desctiption file is a CSV file and look like this:
-                ##timestamp=123123124.123123, src_mac=<SRC_MAC>,dst_mac=<DST_MAC>, src_ip=<SRC_IP>, dst_ip<DST_IP>, src_port=<SRC_PORT>,dst_port=<DST_PORT>,gtp=<GTP_TEID>, ?? - unimplemented
-                #let us further assume that order is not important
-                one_line = line.split(',')
-                # this dictionary will store eventually one complete header
-                header = {
-                        'timestamp':"",
-                        'src_mac':"",
-                        'dst_mac':"",
-                        'src_ip':"",
-                        'dst_ip':"",
-                        'src_port':"",
-                        'dst_port':"",
-                        'gtp':"",
-                        'ext_src_ip':"",
-                        'ext_dst_ip':"",
-                        'vlan':"",
-                        'proto':"", #udp/tcp
-                        'payload':"" #this points to a file containing the payload in HEX in one line
-                        # TODO: add more (header) fields here
-                }
-                for j in one_line:
-                    #remove white spaces
-                    j=j.strip()
-                    #check whether there is a remaining comma at the end (strip above already makes it a zero-length
-                    #white space, so we only need to check that
+        while hasNextLine:
+            g = 0
+            headers = []
 
-                    if j != "":
-                        #OK, everything is prepared, let's start to parse the relevant data
-                        header_row=j.split('=')
-                        #now, we only will have key=value pairs, let's see whether they are meaningful
-                        #note we need to iterate the whole line first, as it should not be ordered.
-                        for h in header.keys():
-                            if header_row[0] == h:
-                                if h.endswith("mac"):
-                                #convert header data to MAC
-                                    header[h] = parseMAC(header_row[1])
-                                elif h.endswith('ip'):
-                                #convert header data to IP
-                                    header[h] = parseIP(header_row[1])
-                                elif h.endswith('port') or h.endswith('vlan') or h.endswith('gtp'):
-                                #convert header data to Integer
-                                    header[h] = int(header_row[1])
-                                elif h.endswith('timestamp') or h.endswith('payload'):
-                                    header[h] = header_row[1] #it is a string, but it can remain a string
-                                elif h.endswith('proto'):
-                                    header[h] = parseProto(header_row[1])
-                                # TODO: handle here futher header fields
+            while g <= 100000:
+                line = f.readline()
+                if not line:
+                    hasNextLine = False
+                    break
+                g = g + 1
+                line = line.strip()
+                if not (line.startswith("#", 0, 1)):
+                    #assume that the desctiption file is a CSV file and look like this:
+                    ##timestamp=123123124.123123, src_mac=<SRC_MAC>,dst_mac=<DST_MAC>, src_ip=<SRC_IP>, dst_ip<DST_IP>, src_port=<SRC_PORT>,dst_port=<DST_PORT>,gtp=<GTP_TEID>, ?? - unimplemented
+                    #let us further assume that order is not important
+                    one_line = line.split(',')
+                    # this dictionary will store eventually one complete header
+                    header = {
+                            'timestamp':"",
+                            'src_mac':"",
+                            'dst_mac':"",
+                            'src_ip':"",
+                            'dst_ip':"",
+                            'src_port':"",
+                            'dst_port':"",
+                            'gtp':"",
+                            'ext_src_ip':"",
+                            'ext_dst_ip':"",
+                            'vlan':"",
+                            'proto':"", #udp/tcp
+                            'payload':"" #this points to a file containing the payload in HEX in one line
+                            # TODO: add more (header) fields here
+                    }
+                    for i in one_line:
+                        #remove white spaces
+                        i=i.strip()
+                        #check whether there is a remaining comma at the end (strip above already makes it a zero-length
+                        #white space, so we only need to check that
 
-                for hh in header:
-                    #inside one header
-                    if hh == 'timestamp' and header[hh]=="":
-                        header[hh] = default_timestamp
+                        if i != "":
+                            #OK, everything is prepared, let's start to parse the relevant data
+                            header_row=i.split('=')
+                            #now, we only will have key=value pairs, let's see whether they are meaningful
+                            #note we need to iterate the whole line first, as it should not be ordered.
+                            for h in header.keys():
+                                if header_row[0] == h:
+                                    if h.endswith("mac"):
+                                    #convert header data to MAC
+                                        header[h] = parseMAC(header_row[1])
+                                    elif h.endswith('ip'):
+                                    #convert header data to IP
+                                        header[h] = parseIP(header_row[1])
+                                    elif h.endswith('port') or h.endswith('vlan') or h.endswith('gtp'):
+                                    #convert header data to Integer
+                                        header[h] = int(header_row[1])
+                                    elif h.endswith('timestamp') or h.endswith('payload'):
+                                        header[h] = header_row[1] #it is a string, but it can remain a string
+                                    elif h.endswith('proto'):
+                                        header[h] = parseProto(header_row[1])
+                                    # TODO: handle here futher header fields
+                    headers.append(header)
 
-                    if hh == 'src_mac' and header[hh]=="":
-                        header[hh]=parseMAC(default_src_mac)
+                    for h in headers:
+                        #inside the list
+                        for hh in h:
+                            #inside one header
+                            if hh == 'timestamp' and h[hh]=="":
+                                h[hh] = default_timestamp
 
-                    if hh == 'dst_mac' and header[hh]=="":
-                        header[hh] = parseMAC(default_dst_mac)
+                            if hh == 'src_mac' and h[hh]=="":
+                                h[hh]=parseMAC(default_src_mac)
 
-                    if hh == 'src_ip' and header[hh] =="":
-                        header[hh]=parseIP(default_src_ip)
+                            if hh == 'dst_mac' and h[hh]=="":
+                                h[hh] = parseMAC(default_dst_mac)
 
-                    if hh == 'dst_ip' and header[hh] == "":
-                        header[hh] = parseIP(default_dst_ip)
+                            if hh == 'src_ip' and h[hh] =="":
+                                h[hh]=parseIP(default_src_ip)
 
-                    if hh == 'src_port' and header[hh] == "":
-                        header[hh] = default_src_port
+                            if hh == 'dst_ip' and h[hh] == "":
+                                h[hh] = parseIP(default_dst_ip)
 
-                    if hh == 'dst_port' and header[hh] == "":
-                        header[hh] = default_dst_port
+                            if hh == 'src_port' and h[hh] == "":
+                                h[hh] = default_src_port
 
-                    if hh == 'vlan' and header[hh] == "":
-                        header[hh] = default_vlan
+                            if hh == 'dst_port' and h[hh] == "":
+                                h[hh] = default_dst_port
 
-                    if hh == 'gtp' and header[hh] == "":
-                        header[hh] = None
+                            if hh == 'vlan' and h[hh] == "":
+                                h[hh] = default_vlan
 
-                    if hh == 'payload' and header[hh] == "":
-                        header[hh] = None
+                            if hh == 'gtp' and h[hh] == "":
+                                h[hh] = None
 
-                    if hh == 'proto' and header[hh] == "":
-                        header[hh] = parseProto(default_proto)
+                            if hh == 'payload' and h[hh] == "":
+                                h[hh] = None
 
-                # FURTHER PROCESSING HERE
+                            if hh == 'proto' and h[hh] == "":
+                                h[hh] = parseProto(default_proto)
+                
+            # FURTHER PROCESSING HERE
+            n=len(headers)
+
+            # write out header information to file - for easier NF configuration later - 5-tuples are in .nfo files as well
+            for i in range(1, int(n) + 1):
                 # set here the variables    
-                timestamp = header['timestamp']
-                sport = header['src_port']
-                dport = header['dst_port']
-                src_ip = header['src_ip']
-                dst_ip = header['dst_ip']
-                src_mac = header['src_mac']
-                dst_mac = header['dst_mac']
-                vlan = header['vlan']
+                timestamp = headers[i-1]['timestamp']
+                sport = headers[i-1]['src_port']
+                dport = headers[i-1]['dst_port']
+                src_ip = headers[i-1]['src_ip']
+                dst_ip = headers[i-1]['dst_ip']
+                src_mac = headers[i-1]['src_mac']
+                dst_mac = headers[i-1]['dst_mac']
+                vlan = headers[i-1]['vlan']
 
-                gtp_teid = header['gtp']
-                ext_src_ip = header['ext_src_ip']
-                ext_dst_ip = header['ext_dst_ip']
+                gtp_teid = headers[i-1]['gtp']
+                ext_src_ip = headers[i-1]['ext_src_ip']
+                ext_dst_ip = headers[i-1]['ext_dst_ip']
 
-                payload = header['payload']
-                proto = header['proto']
+                payload = headers[i-1]['payload']
+                proto = headers[i-1]['proto']
 
 
                 #VLAN HANDLING - it requires other eth_type and additional headers
@@ -675,7 +689,7 @@ def generateTraceFromFile(inputfile, pcapfile, **kwargs):
 
                 # this function is writing out pcap file per se
                 if verbose:
-                    print("Packet to be written out:\n{}".format(header))
+                    print("Packet to be written out:\n{}".format(headers[i-1]))
 
                 writeByteStringToFile(bytestring, pcapfile + ".pcap")
 
@@ -687,7 +701,318 @@ def generateTraceFromFile(inputfile, pcapfile, **kwargs):
                     ext_udp = ext_udp.replace("%04x" % int(ext_udp_len), 'YY YY')
                     ext_ip = ext_ip.replace("%04x" % int(ext_ip_len), 'XX XX')
 
-            line = f.readline()
+
+
+            # i = i + 1    
+            # line = line.strip()
+            # if not (line.startswith("#", 0, 1)):
+            #     #assume that the desctiption file is a CSV file and look like this:
+            #     ##timestamp=123123124.123123, src_mac=<SRC_MAC>,dst_mac=<DST_MAC>, src_ip=<SRC_IP>, dst_ip<DST_IP>, src_port=<SRC_PORT>,dst_port=<DST_PORT>,gtp=<GTP_TEID>, ?? - unimplemented
+            #     #let us further assume that order is not important
+            #     one_line = line.split(',')
+            #     # this dictionary will store eventually one complete header
+            #     header = {
+            #             'timestamp':"",
+            #             'src_mac':"",
+            #             'dst_mac':"",
+            #             'src_ip':"",
+            #             'dst_ip':"",
+            #             'src_port':"",
+            #             'dst_port':"",
+            #             'gtp':"",
+            #             'ext_src_ip':"",
+            #             'ext_dst_ip':"",
+            #             'vlan':"",
+            #             'proto':"", #udp/tcp
+            #             'payload':"" #this points to a file containing the payload in HEX in one line
+            #             # TODO: add more (header) fields here
+            #     }
+            #     for j in one_line:
+            #         #remove white spaces
+            #         j=j.strip()
+            #         #check whether there is a remaining comma at the end (strip above already makes it a zero-length
+            #         #white space, so we only need to check that
+
+            #         if j != "":
+            #             #OK, everything is prepared, let's start to parse the relevant data
+            #             header_row=j.split('=')
+            #             #now, we only will have key=value pairs, let's see whether they are meaningful
+            #             #note we need to iterate the whole line first, as it should not be ordered.
+            #             for h in header.keys():
+            #                 if header_row[0] == h:
+            #                     if h.endswith("mac"):
+            #                     #convert header data to MAC
+            #                         header[h] = parseMAC(header_row[1])
+            #                     elif h.endswith('ip'):
+            #                     #convert header data to IP
+            #                         header[h] = parseIP(header_row[1])
+            #                     elif h.endswith('port') or h.endswith('vlan') or h.endswith('gtp'):
+            #                     #convert header data to Integer
+            #                         header[h] = int(header_row[1])
+            #                     elif h.endswith('timestamp') or h.endswith('payload'):
+            #                         header[h] = header_row[1] #it is a string, but it can remain a string
+            #                     elif h.endswith('proto'):
+            #                         header[h] = parseProto(header_row[1])
+            #                     # TODO: handle here futher header fields
+
+            #     for hh in header:
+            #         #inside one header
+            #         if hh == 'timestamp' and header[hh]=="":
+            #             header[hh] = default_timestamp
+
+            #         if hh == 'src_mac' and header[hh]=="":
+            #             header[hh]=parseMAC(default_src_mac)
+
+            #         if hh == 'dst_mac' and header[hh]=="":
+            #             header[hh] = parseMAC(default_dst_mac)
+
+            #         if hh == 'src_ip' and header[hh] =="":
+            #             header[hh]=parseIP(default_src_ip)
+
+            #         if hh == 'dst_ip' and header[hh] == "":
+            #             header[hh] = parseIP(default_dst_ip)
+
+            #         if hh == 'src_port' and header[hh] == "":
+            #             header[hh] = default_src_port
+
+            #         if hh == 'dst_port' and header[hh] == "":
+            #             header[hh] = default_dst_port
+
+            #         if hh == 'vlan' and header[hh] == "":
+            #             header[hh] = default_vlan
+
+            #         if hh == 'gtp' and header[hh] == "":
+            #             header[hh] = None
+
+            #         if hh == 'payload' and header[hh] == "":
+            #             header[hh] = None
+
+            #         if hh == 'proto' and header[hh] == "":
+            #             header[hh] = parseProto(default_proto)
+
+            #     # FURTHER PROCESSING HERE
+            #     # set here the variables    
+            #     timestamp = header['timestamp']
+            #     sport = header['src_port']
+            #     dport = header['dst_port']
+            #     src_ip = header['src_ip']
+            #     dst_ip = header['dst_ip']
+            #     src_mac = header['src_mac']
+            #     dst_mac = header['dst_mac']
+            #     vlan = header['vlan']
+
+            #     gtp_teid = header['gtp']
+            #     ext_src_ip = header['ext_src_ip']
+            #     ext_dst_ip = header['ext_dst_ip']
+
+            #     payload = header['payload']
+            #     proto = header['proto']
+
+
+            #     #VLAN HANDLING - it requires other eth_type and additional headers
+            #     if vlan is None:
+            #         # update ethernet header for each packet
+            #         eth_header = dst_mac + ' ' + src_mac + "0800"
+            #     else:
+            #         eth_header = dst_mac + ' ' + src_mac + \
+            #                     '81 00' + \
+            #                     '0V VV' + \
+            #                     '08 00'
+            #         # update vlan header
+            #         eth_header = eth_header.replace('0V VV', "0%03x" % vlan)
+
+            #     # GTP tunneling: it requires additional headers
+            #     if gtp_teid is not None:
+            #         gtp = gtp_header
+            #         gtp = gtp.replace('TT TT TT TT', "%08x" % gtp_teid)
+
+            #         # generate the external headers
+            #         gtp_dport = 2152
+            #         gtp_sport = 2152
+            #         ext_udp = udp_header.replace('XX XX', "%04x" % gtp_dport)
+            #         ext_udp = ext_udp.replace('ZZ ZZ', "%04x" % gtp_sport)
+            #         ext_ip = ip_header
+            #         ext_ip = ext_ip.replace('SS SS SS SS', ext_src_ip)
+            #         ext_ip = ext_ip.replace('DD DD DD DD', ext_dst_ip)
+
+            #     # update ip header - see on top how it looks like (the last bytes are encoding the IP address)
+            #     ip = ip_header
+            #     ip = ip.replace('SS SS SS SS', src_ip) #update source IP
+            #     ip = ip.replace('DD DD DD DD', dst_ip) #upodate destination IP
+
+            
+            #     # Random payload
+            #     if payload is None:
+            #         # generate the packet payload (random)
+            #         if default_payloadsize is None:
+            #             payloadSize = random.randint(20,1200)
+            #         else:
+            #             payloadSize = int(default_payloadsize)
+
+            #         message = getMessage(payloadSize)
+
+            #     # if payload is set
+            #     else:
+            #         message=None
+            #         # Bypass the need for payload to be a fixed input file, instead, we specify the custom payload for each packet in the CSV file.
+            #         message=payload.strip()
+            #         # with open(payload, 'r') as lines:
+            #         #     for l in lines:
+            #         #         #remove blank spaces
+            #         #         l = l.strip()
+            #         #         #removed blank lines
+            #         #         if l:
+            #         #             #omit commented lines
+            #         #             if not (l.startswith("#", 0, 1)):
+            #         #                 message = l
+            #         if message is None:
+            #             print("The file containing the payload {} has no useful line".format(payload))
+            #             print("Exiting...")
+            #             exit(-1)
+                
+            #     #Update proto
+            #     ip = ip.replace('PP', proto) #update IP proto
+            #     if(proto != '06'): #it is NOT A TCP packet, treat as UDP!
+            #     #----===== UDP =====----
+            #         TCP = False
+            #         # update ports
+            #         udp = udp_header.replace('XX XX', "%04x" % dport)
+            #         udp = udp.replace('ZZ ZZ', "%04x" % sport)
+
+            #         # generate the headers (in case of tunneling: internal headers)
+            #         udp_len = getByteLength(message) + getByteLength(udp_header)
+            #         udp = udp.replace('YY YY', "%04x" % int(udp_len))
+
+            #         ip_len = udp_len + getByteLength(ip_header)
+            #         #print("IP_LEN:", ip_len)
+            #     #-----------------------
+            #     else:
+            #         # print("TCP")
+            #     #----=====  TCP  =====----
+            #         TCP = True
+            #         tcp = tcp_header.replace('ZZ ZZ', "%04x" % sport) #src port
+            #         tcp = tcp.replace('XX XX', "%04x" % dport) #dest port
+            #         #seq_no =  str("%08x" % random.randint(0,2**32))
+            #         #ack_no =  str("%08x" % random.randint(0,2**31))
+            #         seq_no = '24922ce5'
+            #         ack_no = '709e582a'
+            #         tcp = tcp.replace('SS SS SS SS', seq_no) #Seq no
+            #         tcp = tcp.replace('AA AA AA AA', ack_no) #ACK no
+            #         tcp = tcp.replace('FF', '12') #replace flags to indicate SYN-ACK
+                    
+            #         #for checksum calculations we need pseudo header and tcp header with 00 00 checksum
+            #         hdr = tcp.replace('CC CC', '00 00')
+                    
+            #         #preparing for checksum calculation
+            #         pseudo_hdr = '00'+proto+src_ip+dst_ip+'14' #last element is TCP length (including data part) which is 20 bytes always
+            #         # print("---", pseudo_hdr)
+            #         # print(hdr)
+            #         hdr_checksum=pseudo_hdr+hdr
+            #         tcp = tcp.replace('CC CC', "%04x" % int(calc_checksum(hdr_checksum)))
+
+            #         #TCP SYN-ACK is supported only
+            #         # Add TCP SA options to TCP base header
+
+            #         tcp += tcp_sa_opt 
+            #         # TODO: add TCP SYN, ACK, and further features
+            #         # print('---tcp_sa')
+            #         # print(tcp_sa_opt)
+
+            #         # tcp_len = getByteLength(message) + getByteLength(tcp)
+            #         tcp_len =  getByteLength(tcp)
+            #         ip_len = tcp_len + getByteLength(ip_header)
+            #         #print("IP_LEN:", ip_len)
+
+            #     #-------------------------
+
+            #     ip = ip.replace('XX XX', "%04x" % int(ip_len))
+            #     checksum = calc_checksum(ip.replace('YY YY', '00 00'))
+            #     ip = ip.replace('YY YY', "%04x" % int(checksum))
+            #     tot_len = ip_len
+
+            #     # encapsulation (external header)
+            #     if gtp_teid is not None:
+            #         gtp_len = ip_len
+            #         gtp = gtp.replace('LL LL', "%04x" % int(gtp_len))
+
+            #         # generate the external headers
+            #         if(not TCP):
+            #             ext_udp_len = gtp_len + getByteLength(gtp) + getByteLength(udp_header)
+            #             ext_udp = ext_udp.replace('YY YY', "%04x" % int(ext_udp_len))
+
+            #             ext_ip_len = ext_udp_len + getByteLength(ip_header)
+            #             if ext_ip_len > 1500:
+            #                 print("WARNING! Generating >MTU size packets: {}".format(ext_ip_len))
+            #             ext_ip = ext_ip.replace('XX XX', "%04x" % int(ext_ip_len))
+            #             checksum = calc_checksum(ext_ip.replace('YY YY', '00 00'))
+            #             ext_ip = ext_ip.replace('YY YY', "%04x" % int(checksum))
+            #             tot_len = ext_ip_len
+            #         else:
+            #             print("GTP and TCP is not supported yet")
+            #             exit(-1)
+            #             # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            #             # TODO: add TCP + GTP support here
+            #             # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+            #     pcap_len = tot_len + getByteLength(eth_header)
+            #     hex_str = "%08x" % int(pcap_len)
+            #     reverse_hex_str = hex_str[6:] + hex_str[4:6] + hex_str[2:4] + hex_str[:2]
+
+            #     pcaph = pcap_packet_header.replace('XX XX XX XX', reverse_hex_str)
+            #     pcaph = pcaph.replace('YY YY YY YY', reverse_hex_str)
+
+            #     #adding timestamp
+            #     if timestamp is None: #timestamp was not set, use current time
+            #         t = createTimestamp()
+            #     else:
+            #         t = createTimestamp(time=timestamp)
+            #     pcaph = pcaph.replace('T1 T1 T1 T1', t[0]) # time[0] is seonds
+            #     pcaph = pcaph.replace('T2 T2 T2 T2', t[1]) # time[1] is useonds
+
+            #     # at the first packet we need the global pcap header
+            #     if i == 1:
+            #         if gtp_teid is not None: 
+            #             if not TCP: 
+            #                 bytestring = pcap_global_header + pcaph + eth_header + ext_ip + ext_udp + gtp + ip + udp + message
+            #             else:
+            #                 #TODO: gtp + tcp support
+            #                 print("GTP and TCP is not supported yet")
+            #                 exit(-1)
+            #         else:
+            #             if not TCP: 
+            #                 bytestring = pcap_global_header + pcaph + eth_header + ip + udp + message
+            #             else:
+            #                 bytestring = pcap_global_header + pcaph + eth_header + ip + tcp + message
+            #     # for the rest, only the packets are coming
+            #     else:
+            #         if gtp_teid is not None:
+            #             if not TCP:
+            #                 bytestring = pcaph + eth_header + ext_ip + ext_udp + gtp + ip + udp + message
+            #             else: 
+            #                 #TODO: gtp + tcp support
+            #                 print("GTP and TCP is not supported yet")
+            #                 exit(-1)
+            #         else:
+            #             if not TCP:
+            #                 bytestring = pcaph + eth_header + ip + udp + message
+            #             else:
+            #                 bytestring = pcaph + eth_header + ip + tcp + message
+
+            #     # this function is writing out pcap file per se
+            #     if verbose:
+            #         print("Packet to be written out:\n{}".format(header))
+
+            #     writeByteStringToFile(bytestring, pcapfile + ".pcap")
+
+            #     # we have to change back the variable fields to their original fixed value else they will not be found
+            #     ip = ip.replace("%04x" % int(ip_len), 'XX XX')
+            #     udp = udp.replace("%04x" % int(udp_len), 'YY YY')
+            #     if gtp_teid is not None:
+            #         gtp = gtp.replace("%04x" % int(gtp_len), 'LL LL')
+            #         ext_udp = ext_udp.replace("%04x" % int(ext_udp_len), 'YY YY')
+            #         ext_ip = ext_ip.replace("%04x" % int(ext_ip_len), 'XX XX')
+
+            # line = f.readline()
 
 
 
