@@ -1,4 +1,6 @@
-# PCAP Generator w/ PAYLOAD
+TODO...
+
+<!-- # PCAP Generator w/ PAYLOAD
 This project is based on my pcap_generator project (https://github.com/cslev/pcap_generator), but this supports adding payloads to the packets defined in a text file.
 Thus, generating packet within a given packet size is not supported (use the other project for that purpose).
 If no payload is defined, packets will be generated either with random payload size (within 20-1200 bytes), or a preset static one (via command line argument).
@@ -107,4 +109,4 @@ Then, the corresponding HEX strings will be highlighted in the bottom pane.
 Now, click again on the usefule payload but with your right mouse button and click on `Show packet bytes`.
 
 You can see the payload now, however it is in ASCII. In the bottom (above the `Find:` textfield), change `Show as` to RAW (not HEX DUMP!).
-Copy-paste the raw HEX string into a textfile, save it (`example.payload`), and point to that payload file in your `input.csv` via `payload=example.payload` for the packets you want to have that specific payload.
+Copy-paste the raw HEX string into a textfile, save it (`example.payload`), and point to that payload file in your `input.csv` via `payload=example.payload` for the packets you want to have that specific payload. -->
