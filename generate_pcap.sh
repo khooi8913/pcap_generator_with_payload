@@ -74,7 +74,13 @@ do
 		awk '{ printf "payload=0001%08x00000000\n", $1 }' $input_directory/$trace > /tmp/tmp.csv
 		echo "Writing PCAP file ..."
 		./pcap_generator_from_csv.py -i /tmp/tmp.csv -o $output_directory/$trace > /dev/null
-		echo $trace >> $output_directory/progress
+		if [$? -eq 0 ]
+		then  
+			echo $trace >> $output_directory/progress
+		else
+			echo -e "An error has occured! Terminating the script..." 
+			exit 1
+		fi
 	fi
 done
 
