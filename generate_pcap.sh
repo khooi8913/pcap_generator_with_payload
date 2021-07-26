@@ -6,10 +6,11 @@ function show_help
  echo -e "Example: ./generate_pcap.sh -i <INPUT_DIRECTORY> -o <OUTPUT_DIRECTORY>"
  echo -e "\t\t-i <INPUT_DIRECTORY>: Directory containing the (reduced) memcached trace keys."
  echo -e "\t\t-o <OUTPUT_DIRECTORY>: Directory to contain the resulting PCAP files. Cannot be the same with INPUT_DIRECTORY."
+ echo -e "\t\t-r Enabling this flag clears the existing progress file and processing of the directory will start from scratch."
  exit
  }
 
-while getopts "h?i:o:" opt
+while getopts "h?i:o:r" opt
  do
  	case "$opt" in
  	h|\?)
@@ -20,6 +21,9 @@ while getopts "h?i:o:" opt
  		;;
  	o)
  		output_directory=$OPTARG
+ 		;;
+	r)
+ 		reset=1
  		;;
  	*)
  		show_help
@@ -49,14 +53,28 @@ then
 fi
 
 traces=`ls $input_directory`
-# completed=`ls $output_directory`
-# completed=`echo $completed | sed 's/.pcap//g'`	
+
+if [ ! -z $reset ]
+then
+	echo -n "" > $output_directory/progress
+fi
+
+if [ ! -f $output_directory/progress ]
+then
+	touch $output_directory/progress
+fi
 
 for trace in $traces
-do 
-	echo "Currently processing $input_directory/$trace ..."
-	awk '{ printf "payload=0001%08x00000000\n", $1 }' $input_directory/$trace > /tmp/tmp.csv
-	./pcap_generator_from_csv.py -i /tmp/tmp.csv -o $output_directory/$trace > /dev/null	
+do
+	if grep $trace $output_directory/progress > /dev/null 
+	then
+		echo "Skipping $input_directory/$trace ..."
+	else
+		echo "Currently processing $input_directory/$trace ..."
+		awk '{ printf "payload=0001%08x00000000\n", $1 }' $input_directory/$trace > /tmp/tmp.csv
+		./pcap_generator_from_csv.py -i /tmp/tmp.csv -o $output_directory/$trace > /dev/null
+		echo $trace >> $output_directory/progress
+	fi
 done
 
 
